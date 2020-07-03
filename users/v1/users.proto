@@ -1,0 +1,397 @@
+syntax = "proto3";
+package users;
+option go_package = "github.com/HasmikAtom/shifts/users/v1/users";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+message User {
+  string id = 1;
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string status = 5;
+  string auth_method = 6;
+  string email_verified = 7;
+  string position = 8;
+  string salary = 9;
+  string termination = 10;
+  google.protobuf.Timestamp created = 11;
+  string created_by = 12;
+  google.protobuf.Timestamp updated = 13;
+  string updated_by = 14;
+  google.protobuf.Timestamp deleted = 15;
+  string deleted_by = 16;
+}
+
+message Org {
+  string id = 1;
+  string name = 2;
+  string type = 3;
+  string founder = 4;
+  uint32 max_branches = 5;
+  google.protobuf.Timestamp created = 6;
+  string created_by = 7;
+  google.protobuf.Timestamp updated = 8;
+  string updated_by = 14;
+  google.protobuf.Timestamp deleted = 9;
+  string deleted_by = 16;
+}
+
+message Branch {
+  string id = 1;
+  string name = 2;
+  string location = 3;
+  string manager = 4;
+  google.protobuf.Timestamp created = 6;
+  string created_by = 7;
+  google.protobuf.Timestamp updated = 8;
+  string updated_by = 14;
+  google.protobuf.Timestamp deleted = 9;
+  string deleted_by = 16;
+}
+
+message Salary {
+  string salary = 1;
+  google.protobuf.Timestamp date = 2;
+}
+
+message UserShift {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string branch_name = 4;
+  google.protobuf.Timestamp to = 5;
+  google.protobuf.Timestamp from = 6;
+  string created = 7;
+  string created_by = 8;
+}
+
+message CreateUserRequest {
+  string email = 1;
+  string first_name = 3;
+  string last_name = 4;
+  string status = 5;
+  string auth_method = 6;
+}
+
+message UpdateUserRequest {
+  string email = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string status = 5;
+  string auth_method = 6;
+  string email_verified = 7;
+  string position = 8;
+}
+
+message GetUserRequest {
+  string user_id = 1;
+}
+
+message GetUsersRequest {
+  string org = 1;
+  string branch = 2;
+}
+message GetUsersResponse {
+  repeated User users = 1;
+  uint32 count = 2;
+}
+
+message DeleteUserRequest {
+  string user_id = 1;
+  string termination = 2;
+  bool permanent = 3;
+}
+message DeleteUserResponse {
+  string message = 1;
+}
+
+message UpdateSalaryRequest {
+  string user_id = 1;
+  string salary = 2;
+}
+message UpdateSalaryResponse {
+  string message = 1;
+}
+
+message GetSalaryHistoryRequest {
+  string user_id = 1;
+}
+message GetSalaryHistoryResponse {
+  repeated Salary salary = 1;
+}
+
+message CreateOrgRequest {
+  string name = 1;
+  string type = 2;
+}
+message CreateOrgResponse {
+  Org org = 1;
+}
+
+message GetOrgRequest {
+  string org_id = 1;
+}
+message GetOrgResponse {
+  Org org = 1;
+}
+
+message GetOrgsRequest {
+  string user_id = 1;
+}
+message GetOrgsResponse {
+  repeated Org orgs = 1;
+}
+
+message DeleteOrgRequest {
+  string org_id = 1;
+  bool permanent = 2;
+}
+message DeleteOrgResponse {
+  string message = 1;
+}
+
+message AddOrgUsersRequest {
+  string org_id = 1;
+  string user_id = 2;
+}
+message AddOrgUsersResponse {
+  string message = 1;
+}
+
+message RemoveOrgUsersRequest {
+  string org_id = 1;
+  string user_id = 2;
+  bool permanent = 3;
+}
+message RemoveOrgUsersResponse {
+  string message = 1;
+}
+
+message CreateOrgBranchRequest {
+  string org_id = 1;
+  string branch_name = 2;
+}
+message CreateOrgBranchResponse {
+  string message = 1;
+}
+
+message AddBranchUsersRequest {
+  string branch_id = 1;
+  string user_id = 2;
+}
+message AddBranchUsersResponse {
+  string message = 1;
+}
+
+message RemoveBranchUsersRequest {
+  string branch_id = 1;
+  string user_id = 2;
+  bool permanent = 3;
+}
+message RemoveBranchUsersResponse {
+  string message = 1;
+}
+
+message CreatePositionRequest {
+  string name = 1;
+  string org_id = 2;
+  string branch_id = 3;
+}
+message CreatePositionResponse {
+  string message = 1;
+}
+
+message GetPositionsRequest {
+  string org_id = 1;
+}
+message GetPositionsResponse {
+  repeated string positions = 1;
+}
+
+message DeletePositionRequest {
+  string org_id = 1;
+  string position = 2;
+}
+message DeletePositionResponse {
+  string message = 1;
+}
+
+message AddShiftRequest {
+  string user_id = 1;
+  string branch_id = 2;
+  google.protobuf.Timestamp from = 3;
+  google.protobuf.Timestamp to = 4;
+}
+message AddShiftResponse {
+  string message = 1;
+}
+
+message GetShiftsRequest {
+  string user_id = 1;
+  uint32 limit = 2;
+  uint32 offset =3;
+}
+message GetShiftsResponse {
+  repeated UserShift shifts = 1;
+  uint32 count =2;
+}
+
+
+
+service UsersService {
+  rpc CreateUser(CreateUserRequest) returns (User) {
+    option (google.api.http) = {
+      post: "/users/create",
+      body: "*"
+    };
+  }
+
+  rpc UpdateUser(UpdateUserRequest) returns (User) {
+    option (google.api.http) = {
+      put: "/users/update/{userId}",
+      body: "*"
+    };
+  }
+
+  // list members of company
+  // list members of the branch
+  rpc GetUsers(GetUsersRequest) returns (GetUsersResponse) {
+    option (google.api.http) = {
+      get: "/users/get"
+    };
+  }
+
+  rpc GetUser(GetUserRequest) returns (User) {
+    option (google.api.http) = {
+      get: "/users/get/{user_id}"
+    };
+  }
+
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserRequest) {
+    option (google.api.http) = {
+      delte: "/users/delete/{user_id}"
+    };
+  }
+
+  rpc UpdateSalary(UpdateSalaryRequest) returns (UpdateSalaryResponse) {
+    option (google.api.http) = {
+      put: "/salary/update/{user_id}"
+    };
+  }
+
+  rpc GetSalaryHistory(GetSalaryHistoryRequest) returns (GetSalaryHistoryResponse) {
+    option (google.api.http) = {
+      get: "/salary/get/{user_id}"
+    };
+  }
+
+  rpc CreateOrg(CreateOrgRequest) returns (CreateOrgResponse) {
+    option (google.api.http) = {
+      put: "/orgs/create",
+      body: "*"
+    };
+  }
+
+  rpc GetOrg(GetOrgRequest) returns (GetOrgResponse) {
+    option (google.api.http) = {
+      get: "/orgs/get/{org_id}",
+    };
+  }
+
+  // send user id as query or get all orgs (available only for super admin?)
+  rpc GetOrgs(GetOrgsRequest) returns (GetOrgsResponse) {
+    option (google.api.http) = {
+      get: "/orgs/get",
+    };
+  }
+
+  rpc DeleteOrg(DeleteOrgRequest) returns (DeleteOrgResponse) {
+    option (google.api.http) = {
+      delete: "/orgs/delete/{org_id}"
+    };
+  }
+
+  // user gets hired
+  // new user or already existing user?
+  rpc AddOrgUsers(AddOrgUsersRequest) returns (AddOrgUsersResponse) {
+    option (google.api.http) = {
+      post: "/orgs/{org_id}/add/{user_id}"
+    };
+  }
+
+  // user gets fired from org?
+  rpc RremoveOrgUsers(RemoveOrgUsersRequest) returns (RemoveOrgUsersResponse) {
+    option (google.api.http) = {
+      delete: "/orgs/{org_id}/add/{user_id}"
+    };
+  }
+
+  rpc CreateOrgBranch(CreateOrgBranchRequest) returns (CreateOrgBranchResponse) {
+    option (google.api.http) = {
+      post: "/orgs/{org_id}/branch"
+    };
+  }
+
+  // user can be part of multiple branches
+  rpc AddBranchUsers(AddBranchUsersRequest) returns (AddBranchUsersResponse) {
+    option (google.api.http) = {
+      post: "/branches/{branch_id}/add/{user_id}"
+    };
+  }
+
+  rpc RemoveBranchUsers(RemoveBranchUsersRequest) returns (RemoveBranchUsersResponse) {
+    option (google.api.http) = {
+      delete: "/branches/{branch_id}/add/{user_id}"
+    };
+  }
+
+  rpc CreatePositions(CreatePositionRequest) returns (CreatePositionResponse) {
+    option (google.api.http) = {
+      post: "/orgs/{org_id}/positions"
+    };
+  }
+
+  rpc GetPositions(GetPositionsRequest) returns (GetPositionsResponse) {
+    option (google.api.http) = {
+      get: "/orgs/{org_id}/positions"
+    };
+  }
+
+  rpc DeletePosition(DeletePositionRequest) returns (DeletePositionResponse) {
+    option (google.api.http) = {
+      delete: "/orgs/{org_id}/positions/{position}"
+    };
+  }
+
+  rpc AddShift(AddShiftRequest) returns (AddShiftResponse) {
+    option (google.api.http) = {
+      post: "/branches/{branch_id}/shift/{user_id}"
+    };
+  }
+
+  // all shifts of a user
+  rpc GetUserShifts(GetShiftsRequest) returns (GetShiftsResponse) {
+    option (google.api.http) = {
+      get: "/users/shift/{user_id}"
+    };
+  }
+
+}
+
+// get shifts of a user
+// get shifts of a branch in an array
+// get shifts of an org in an array
+// get shifts of a week. or any time period
+
+// user-shift should have an id?? (i should have written the idea down asap)
+
+// employment positions (manager, waiter, cook) should be created by the admins (managers) of the company
+// create a new table to match the company and positions (then get the positions for the companys)
+// limit company managers to add users only to positions they previously created
+// add salary field for the user, hourly daily or monthly calculation
+// companies have locations (branches)
+// add a salary table maybe?
+// track salary history
